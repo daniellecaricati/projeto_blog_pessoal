@@ -3,11 +3,12 @@ package com.generation.blogpessoal.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.query.Param;
 
 import com.generation.blogpessoal.model.Postagem;
 
-public interface PostagemRepository extends JpaRepository<Postagem, Long> {
-
-	public List <Postagem> findAllByTituloContainingIgnoreCase(@Param("titulo") String titulo);
+//Classe que se comunica com o banco de dados, utiliza metodos da JPA - Interface padrao com metodos para interagir com banco de dados
+public interface PostagemRepository extends JpaRepository<Postagem, Long> { 
+	
+	public List <Postagem> findAllByTituloContainingIgnoreCase(String titulo); // metodo criado - publico tipo <nome> método (parametros); 
+	// Titulo é o campo da tabela
 }

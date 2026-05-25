@@ -20,55 +20,72 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.generation.blogpessoal.model.Postagem;
 import com.generation.blogpessoal.repository.PostagemRepository;
+import com.generation.blogpessoal.repository.TemaRepository;
 
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/postagens")
+@RequestMapping("/postagens") // indica o endereço de onde vem a requisição. todos os metodos desta classe herdarão deste endereço
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-public class PostagemController {
+public class PostagemController {//Classe que se comunica com o Client / Front e passa para o Repository interface
+	
+	@Autowired // Inversão de dependencia da interface - vira autonoma 
+	private PostagemRepository postagemRepository; //postagemRepository é o atributo/objeto que invoca os métodos ja implementados no spring 
 	
 	@Autowired
-	private PostagemRepository postagemRepository;
+	private TemaRepository temaRepository;
 	
-	@GetMapping
-	public ResponseEntity<List<Postagem>> getAll(){
+	@GetMapping // postagens - Requisições do tipo GET
+	public ResponseEntity<List<Postagem>> getAll(){ //ResponseEntity é a resposta que o Insomnia deve fazer 
 		return ResponseEntity.ok(postagemRepository.findAll());	
 	}
 	
-	@GetMapping("/{id}")
-	public ResponseEntity<Postagem> getById(@PathVariable Long id){
-		return postagemRepository.findById(id)
-				.map(resposta -> ResponseEntity.ok(resposta))
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+	@GetMapping("/{id}") // id é o endereço {} indica que o id é um valor = numero
+	public ResponseEntity<Postagem> getById(@PathVariable Long id){ // pathvariable é o caminho que pega o id 
+		
+		return postagemRepository.findById(id) // Métodos de manipulação de dados em SQL ja tão prontos 
+				.map(resposta -> ResponseEntity.ok(resposta)) // .map é um Optional, resp : objeto que esta dentro do Optional, ResponseEntity.ok = 200ok
+				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());                                                                             
 	}
 	
-	@GetMapping("/titulo/{titulo}")
+	@GetMapping("/titulo/{titulo}") // BUSCAR /postagens/titulo/algum_texto 
 	public ResponseEntity<List<Postagem>> getByTitulo(@PathVariable String titulo) {
 		return ResponseEntity.ok(postagemRepository.findAllByTituloContainingIgnoreCase(titulo));
 	}
 	
-	@PostMapping
-	public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem){
+	@PostMapping // POSTAR- CRIAR / postagens  && Verbo HTTP for Post 
+	public ResponseEntity<Postagem> post(@Valid @RequestBody Postagem postagem){ // Request body indica que vem do corpo da requisição Body Json no Insomnia
 		
-		postagem.setId(null);
+		if (temaRepository.existsById(postagem.getTema().getId())) { //Se tema não existir exibira reposta 
 		
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(postagemRepository.save(postagem));
+			postagem.setId(null); // acessa o objeto, id e deixa como nulo 
+			
+			return ResponseEntity.status(HttpStatus.CREATED)
+					.body(postagemRepository.save(postagem));
+		}
+		throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null); //Se tema não existir exibira reposta 
 	}
+		
 	
 	@PutMapping
 	public ResponseEntity<Postagem> put(@Valid @RequestBody Postagem postagem) {
-		return postagemRepository.findById(postagem.getId())
-				.map(resposta -> ResponseEntity.status(HttpStatus.OK)
-						.body(postagemRepository.save(postagem)))
-				.orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+
+		if (postagemRepository.existsById(postagem.getId())) {
+
+			if (temaRepository.existsById(postagem.getTema().getId()))
+				return ResponseEntity.status(HttpStatus.OK).body(postagemRepository.save(postagem));
+
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Tema não existe!", null);
+
+		}
+
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 	}
 	
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@DeleteMapping("/{id}")
+	@DeleteMapping("/{id}") // DELETAR
 	public void delete(@PathVariable Long id) {
-		Optional<Postagem> postagem = postagemRepository.findById(id);
+		Optional<Postagem> postagem = postagemRepository.findById(id); //Optional <> nome = classe.metodo
 		
 		if(postagem.isEmpty())
 			throw new ResponseStatusException(HttpStatus.NOT_FOUND);

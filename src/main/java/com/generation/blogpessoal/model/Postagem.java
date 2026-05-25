@@ -4,19 +4,24 @@ import java.time.LocalDateTime;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 // Anotações que servem para alterar ou definir comportamentos. São obrigatórias para conversar com o banco de dados.
+
 @Entity //Define que a classe Postagem vai se tornar uma tabela
 @Table(name = "tb_postagens") //serve para nomear a tabela 
 public class Postagem {
-
+	// Atributos sao privados, métodos sao publicos para que possam usar 
+	
 	@Id //Define a chave primaria 
 	@GeneratedValue(strategy = GenerationType.IDENTITY) // Define o campo para o Auto Increment 
 	private Long id; //LONG = BIGINT
@@ -32,6 +37,10 @@ public class Postagem {
 	
 	@UpdateTimestamp
 	private LocalDateTime data; // colocar data e hora 
+	
+	@ManyToOne // Cria Relacionamento 
+	@JsonIgnoreProperties("postagem")
+	private Tema tema;
 
 
 	public Long getId() {
@@ -71,6 +80,16 @@ public class Postagem {
 
 	public void setData(LocalDateTime data) {
 		this.data = data;
+	}
+
+
+	public Tema getTema() {
+		return tema;
+	}
+
+
+	public void setTema(Tema tema) {
+		this.tema = tema;
 	}
 	
 	

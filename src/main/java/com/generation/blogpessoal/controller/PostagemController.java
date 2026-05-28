@@ -67,7 +67,7 @@ public class PostagemController {//Classe que se comunica com o Client / Front e
 	}
 		
 	
-	@PutMapping
+	@PutMapping //Atualização
 	public ResponseEntity<Postagem> put(@Valid @RequestBody Postagem postagem) {
 
 		if (postagemRepository.existsById(postagem.getId())) {

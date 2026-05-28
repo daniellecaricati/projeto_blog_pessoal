@@ -24,8 +24,8 @@ public class Tema {
 	@NotBlank (message = "O Atributo Descrição é obrigatório")
 	private String descricao; //Atributo pertencente a classe Tema
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tema", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties(value = "tema", allowSetters = true)
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "tema", cascade = CascadeType.REMOVE) //mappedby e cascade : atributos
+	@JsonIgnoreProperties(value = "tema", allowSetters = true) //recursividade
 	private List<Postagem> postagem;
 	
 	public Long getId() {

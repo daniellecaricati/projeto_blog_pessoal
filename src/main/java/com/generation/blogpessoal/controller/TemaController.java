@@ -60,7 +60,7 @@ public class TemaController {
 	 
 	 @ResponseStatus(HttpStatus.NO_CONTENT)
 	 @DeleteMapping("/{id}")
-	 public void delete(@PathVariable Long id) {
+	 public void delete(@PathVariable Long id) { // @PathVariable define que String é um parametro de consulta
 		 Optional<Tema> tema = temaRepository.findById(id);
 		 
 		 if(tema.isEmpty())

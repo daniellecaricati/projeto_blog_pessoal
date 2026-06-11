@@ -30,12 +30,12 @@ import jakarta.validation.Valid;
 public class PostagemController {//Classe que se comunica com o Client / Front e passa para o Repository interface
 	
 	@Autowired // Inversão de dependencia da interface - vira autonoma 
-	private PostagemRepository postagemRepository; //postagemRepository é o atributo/objeto que invoca os métodos ja implementados no spring 
+	private PostagemRepository postagemRepository; //postagemRepository é o atributo/objeto que invoca os métodos jpa implementados no spring 
 	
 	@Autowired
 	private TemaRepository temaRepository;
 	
-	@GetMapping // postagens - Requisições do tipo GET
+	@GetMapping // postagens - Requisições do tipo GET /Listar 
 	public ResponseEntity<List<Postagem>> getAll(){ //ResponseEntity é a resposta que o Insomnia deve fazer 
 		return ResponseEntity.ok(postagemRepository.findAll());	
 	}

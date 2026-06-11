@@ -39,7 +39,7 @@ public class Postagem {
 	private LocalDateTime data; // colocar data e hora 
 	
 	@ManyToOne // Cria Relacionamento 
-	@JsonIgnoreProperties("postagem")
+	@JsonIgnoreProperties("postagem") //Controla como o relacionamento aparece no Json
 	private Tema tema;
 	
 	@ManyToOne

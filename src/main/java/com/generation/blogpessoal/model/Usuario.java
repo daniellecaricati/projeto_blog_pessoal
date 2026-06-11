@@ -40,8 +40,10 @@ public class Usuario {
 	@Size(max = 5000, message = "O link da foto não pode ser maior do que 5000 carcteres")
 	private String foto;
 	
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE)
-	@JsonIgnoreProperties(value = "usuario", allowSetters = true)
+	// fetch= controla quando os dados serao carregados no banco. mappedby- qual atributo é responsavel pelo relacionamento
+	//Cascade.Remove ao apagar o produto apaga tambem a categoria
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "usuario", cascade = CascadeType.REMOVE) 
+	@JsonIgnoreProperties(value = "usuario", allowSetters = true) //allowSetters - associa a postagem ao tema
 	private List<Postagem> postagem;
 
 	public Long getId() {
